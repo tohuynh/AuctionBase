@@ -1,0 +1,66 @@
+•Constraints for Users
+1. No two users can share the same User ID.
+primary key constraint on user_id in user table
+
+2. All sellers and bidders must already exist as users.
+forein key constraint on seller_id in item table, and on bidder_id in bid table, where both references user_id in user table
+
+• Constraints for Items
+3. No two items can share the same Item ID.
+primary key constraint on item_id in item table
+
+4. Every bid must correspond to an actual item.
+foreign key constraint on item_id in bid table that references item_id in item table
+
+5. The items for a given category must all exist.
+foreign key constraint on item_id in category table that references item_id in item table
+
+6. An item cannot belong to a particular category more than once.
+composite primary key (item_id, category_name) in category table
+
+7. The end time for an auction must always be after its start time.
+check(ends > started) in item table
+
+8. The Current Price of an item must always match the Amount of the most recent bid for that item.
+trigger08_add.sql, trigger08_drop.sql
+after insert new bid, update currently in item with bid amount
+
+• Constraints for Bidding
+9. A user may not bid on an item he or she is also selling.
+trigger09_add.sql, trigger09_drop.sql
+before  insert new bid, if the seller_id of bid.item_id = bidder_id, then force rollback and raise error msg
+
+10. No auction may have two bids at the exact same time.
+composite primary key constraint (item_id, time) in bid table
+
+11. No auction may have a bid before its start time or after its end time.
+trigger11_add.sql, trigger11_drop.sql
+before insert new bid, if bid.time < started or bid.time > ends, then force rollback and raise error msg
+
+11a. No new bid after buy_price has been met (i.e. currently >= buy_price)
+trigger11a_add.sql, trigger11a_drop.sql
+before insert new bid, if currently of bid item >= buy_price, then force rollback and raise error msg
+
+12. No user can make a bid of the same amount to the same item more than once.
+unique constraint (item_id, bidder_id, amount) in bid table
+
+13. In every auction, the Number of Bids attribute corresponds to the actual number of bids for that particular
+item.
+trigger13_add.sql, trigger13_drop.sql
+after insert new bid, increase number_of_bids by 1
+
+14. Any new bid for a particular item must have a higher amount than any of the previous bids for that particular
+item.
+trigger14_add.sql,trigger14_drop.sql
+before insert new bid, if bid.amount <= currently of item, then force rollback and raise error msg
+
+• Constraints for Time
+
+15. All new bids must be placed at the time which matches the current time of your AuctionBase system.
+trigger15_add.sql, trigger15_drop.sql
+before insert new bid, if bid.time <> cur_time, then force rollback and raise error msg
+
+16. The current time of your AuctionBase system can only advance forward in time, not backward in time.
+trigger16_add.sql,trigger16_drop.sql
+deny insert new currenttime, or delete
+on update cur_time, if new.cur_time <= old.cur_time, then force rollback and raise error msg

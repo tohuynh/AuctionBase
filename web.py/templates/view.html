@@ -1,0 +1,57 @@
+{% extends "app_base.html" %}
+{% block content %}
+<h3> Item </h3>
+<h4>Status: {{status}}</h4>
+{% if item_result %}
+<div class='table-responsive'>
+<table class='table table-hover'>
+<thead>
+    <tr>
+        {% for key in item_result %}
+        <th scope='col'>{{key|e}}</th>
+        {% endfor %}
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        {% for key in item_result %}
+        <td>{{item_result[key]|e}}</th>
+        {% endfor %}
+    </tr>
+</tbody>
+</table>
+</div>
+{% else %}
+<div>No item</div>
+{% endif %}
+
+
+<h3> Bids </h3>
+{% if bid_result %}
+<div class='table-responsive'>
+<table class='table table-hover'>
+<thead>
+    <tr>
+        <th scope='col'>BidderID</th>
+        <th scope='col'>Time</th>
+        <th scope='col'>Amount</th>
+    </tr>
+</thead>
+<tbody>
+{% for result in bid_result %}
+    <tr>
+        <td>{{result['bidder_id']|e}}</th>
+        <td>{{result['time']|e}}</th>
+        <td>{{result['amount']|e}}</th>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% else %}
+<div>No bids</div>
+{% endif %}
+
+{% endblock %}
+
