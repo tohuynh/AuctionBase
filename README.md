@@ -10,4 +10,4 @@ python auctionbase.py 3000 <br />
 go to: localhost:3000/search <br />
 
 
-<img src="auctiobase.png" width="500"/>
+<img src="auctionbase.png" width="500" alt="AuctionBase"/>
